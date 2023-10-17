@@ -3,7 +3,7 @@
 		{{stopwatch.hours}} : {{stopwatch.minutes}} : {{stopwatch.seconds}} 
 	</div>
 	<div class="buttons">
-		<button (click)="startCount()" mat-fab >{{isRunning ? 'Stop' : 'Start'}}</button>
+		<button (click)="handleCount()" mat-fab >{{isRunning ? 'Stop' : 'Start'}}</button>
 		<button (click)="waitCount()" mat-fab color="primary">Wait</button>
 		<button (click)="resetStopwatch()" mat-fab color="basic">Reset</button>
 	</div>

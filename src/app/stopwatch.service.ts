@@ -49,7 +49,7 @@ export class StopwatchService {
   /**
  * Starts the stopwatch from the initial time or the last stopped count
  */ 
-  startCount(): void {
+  handleCount(): void {
     if (this.isRunning) {
       this.#lastStopedTime = this.#timer$.value;
       this.#timerSubscription.unsubscribe();

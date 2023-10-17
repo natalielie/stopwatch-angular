@@ -30,15 +30,26 @@ export class AppComponent implements OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  public startCount(): void {
-    this.stopwatchService.startCount();
+  /**
+ * Starts the stopwatch from the initial time or the last stopped count
+ */ 
+  public handleCount(): void {
+    this.stopwatchService.handleCount();
     this.isRunning = this.stopwatchService.isRunning
   }
 
+  /**
+ * Resets the stopwatch to 0
+ */ 
   public resetStopwatch(): void {
     this.stopwatchService.resetStopwatch();
     this.isRunning = false;
   }
+
+  /**
+ * Checks if there were two consecutive clicks within 300ms and stops the time
+ * 
+ */
   public waitCount(): void {
     this.stopwatchService.waitCount();
     this.isRunning = false;
