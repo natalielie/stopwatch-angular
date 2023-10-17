@@ -17,6 +17,7 @@ export class AppComponent implements OnDestroy {
   public stopwatch!: StopWatch;
   // a subject that emits a truthy value in the ngOnDestroy lifecycle hook
   destroy$: Subject<boolean> = new Subject<boolean>();
+  isRunning: boolean = false;
 
   constructor(private stopwatchService: StopwatchService) {
       this.stopwatchService.stopWatch$.subscribe(
@@ -31,16 +32,15 @@ export class AppComponent implements OnDestroy {
 
   public startCount(): void {
     this.stopwatchService.startCount();
-  }
-
-  public stopCount(): void {
-    this.stopwatchService.stopCount();
+    this.isRunning = this.stopwatchService.isRunning
   }
 
   public resetStopwatch(): void {
     this.stopwatchService.resetStopwatch();
+    this.isRunning = false;
   }
   public waitCount(): void {
     this.stopwatchService.waitCount();
+    this.isRunning = false;
   }
 }

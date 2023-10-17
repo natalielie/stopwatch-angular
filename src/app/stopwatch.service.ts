@@ -24,6 +24,7 @@ import { StopWatch } from "./stopwatch.interface";
  * Stopwatch service that provides the main functionality using RxJS
  */
 export class StopwatchService {
+  isRunning: boolean = false;
   readonly #initialTime = 0;
 
   #timer$: BehaviorSubject<number> = new BehaviorSubject(
@@ -31,7 +32,6 @@ export class StopwatchService {
   );
   #lastStopedTime: number = this.#initialTime;
   #timerSubscription: Subscription = new Subscription();
-  #isRunning: boolean = false;
 
   constructor() {}
 
@@ -50,15 +50,18 @@ export class StopwatchService {
  * Starts the stopwatch from the initial time or the last stopped count
  */ 
   startCount(): void {
-    if (this.#isRunning) {
-      return;
+    if (this.isRunning) {
+      this.#lastStopedTime = this.#timer$.value;
+      this.#timerSubscription.unsubscribe();
+      this.isRunning = false;
+      return
     }
     // timer for emitting each value every second
     this.#timerSubscription = timer(0, 1000) 
       .pipe(map((value: number): number => value + this.#lastStopedTime))
       // each emit of the Observable will result in a emit of the BehaviorSubject timer$
       .subscribe(this.#timer$); 
-    this.#isRunning = true;
+    this.isRunning = true;
   }
 
 /**
@@ -67,7 +70,7 @@ export class StopwatchService {
   stopCount(): void {
     this.#lastStopedTime = this.#timer$.value;
     this.#timerSubscription.unsubscribe();
-    this.#isRunning = false;
+    this.isRunning = false;
   }
 
 /**
@@ -77,7 +80,7 @@ export class StopwatchService {
     this.#timerSubscription.unsubscribe();
     this.#lastStopedTime = this.#initialTime;
     this.#timer$.next(this.#initialTime);
-    this.#isRunning = false;
+    this.isRunning = false;
   }
 
   /**
