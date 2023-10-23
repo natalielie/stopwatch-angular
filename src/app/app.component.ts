@@ -21,13 +21,16 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnDestroy {
-  // a stopwatch property of Stopwatch interface
-  public stopwatch: number = -new Date().getTimezoneOffset();
-  isRunning: boolean = false;
-
-  #timerSubscription: Subscription = new Subscription();
-  // a subject that emits a truthy value in the ngOnDestroy lifecycle hook
-  destroy$: Subject<boolean> = new Subject<boolean>();
+  /**
+   * a time property represented in creating new current date and time,
+   * setting the offset, which is negative,
+   * so putting '-' sets the value to the beginning, 00:00:00
+   */
+  public time: number = -new Date().getTimezoneOffset();
+  public isRunning = false;
+  private timerSubscription: Subscription = new Subscription();
+  /** a subject that emits a truthy value in the ngOnDestroy lifecycle hook */
+  private destroy$: Subject<boolean> = new Subject<boolean>();
 
   ngOnDestroy() {
     this.destroy$.next(true);
@@ -40,15 +43,13 @@ export class AppComponent implements OnDestroy {
   public handleCount(): void {
     //if the time is running, stop the count
     if (this.isRunning) {
-      this.destroy$.next(true);
-      this.#timerSubscription.unsubscribe();
-      this.isRunning = false;
+      this.stopCount();
       return;
     }
     // timer for emitting each value every second
-    this.#timerSubscription = timer(0, 1000)
+    this.timerSubscription = timer(0, 1000)
       .pipe(
-        map(() => (this.stopwatch += 1000)),
+        map(() => (this.time += 1000)),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {});
@@ -57,12 +58,21 @@ export class AppComponent implements OnDestroy {
   }
 
   /**
+   * Stops the stopwatch on the last count
+   */
+  public stopCount(): void {
+    this.destroy$.next(true);
+    this.timerSubscription.unsubscribe();
+    this.isRunning = false;
+  }
+
+  /**
    * Resets the stopwatch to 0
    */
   public resetStopwatch(): void {
     this.destroy$.next(true);
-    this.#timerSubscription.unsubscribe();
-    this.stopwatch = 0;
+    this.timerSubscription.unsubscribe();
+    this.time = 0;
     this.isRunning = false;
   }
 
@@ -82,9 +92,9 @@ export class AppComponent implements OnDestroy {
       map((list) => {
         return list.length;
       }),
-      filter((x) => x === 2),
+      filter((count) => count === 2),
       takeUntil(this.destroy$)
     );
-    click$.subscribe(() => this.handleCount());
+    click$.subscribe(() => this.stopCount());
   }
 }

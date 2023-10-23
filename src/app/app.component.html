@@ -1,6 +1,6 @@
 <div class="stopwatch">
   <div class="display">
-    {{ stopwatch | date : "HH:mm:ss" : "UTC" }}
+    {{ time | date : "HH:mm:ss" : "UTC" }}
   </div>
   <div class="buttons">
     <button (click)="handleCount()" mat-fab>
